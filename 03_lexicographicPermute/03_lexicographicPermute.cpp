@@ -59,27 +59,28 @@ void nextLexicographicPermute(vector<int>& p) {
     * Um vetor de inteiros com a próxima permutação lexicográfica
     */
 
+    // Valores auxiliares
     int i, j;
 
     // Enquanto a permutação atual contiver um elemento móvel
     if (has_2consec_increasing(p)) {
 
-        // Quebra a sequencia decrescente
+        // Índice do elemento que quebra a sequencia decrescente
         i = find_i(p);
 
         // Maior índice de um elemento maior que p[i] na sequencia decrescente
         j = find_j(p, i);
 
-        // Troca posição
+        // Troca posição p[i] com p[j]
         swapPositions(p[i], p[j]);
 
-        // x
+        // Reverte a ordem dos elementos p(i+1) a p(n)
         reverse_greater_i(p, i);
     }
 }
 
 int main() {
-    // 
+    // Inicializa número de elementos
     int n;
 
     // Pede o número de elementos
@@ -105,43 +106,89 @@ int main() {
 }
 
 bool has_2consec_increasing(vector<int>& p) {
+    /* Verifica se permutação possui 2 elementos consecutivos em ordem crescente
+    * ENTRADA:
+    * Ponteiro para Vetor p com permutação
+    * SAÍDA:
+    * Um booleano true caso haja 2 elementos consecutivos em ordem crescente
+    */
+
+    // Tamanho da permutação
     int n = p.size();
 
+    // Percorre cada um dos elementos do vetor p, exceto o último
     for (int i = 0; i < n - 1; i++) {
+        // Se o próximo for maior que o atual, retorne true
         if (p[i + 1] > p[i])
             return true;
     }
-
+    
+    // Se chegou aqui, não encontrou 2 consecutivos crescentes, retorne false
     return false;
 }
 
 int find_i(vector<int>& p) {
+    /* Encontra o índice do elemento que quebra a sequencia decrescente
+    * i é o maior índice tal que a(i) < a(i+1) // a(i+1) > a(i+2) > ... > a(n)
+    * ENTRADA: 
+    * Ponteiro para Vetor p com permutação
+    * SAÍDA:
+    * Inteiro com o índice i
+    */
+
+    // Tamanho da permutação
     int n = p.size();
 
+    // Percorre do último ao segundo elemento
     for (int i = n - 1; i > 1; i--)
+        // Caso o elemento atual seja maior que seu anterior
         if (p[i] > p[i - 1])
+            // Retorne o índice do elemento anterior
             return i - 1;
 
+    // Caso não encontre o elemento que quebra sequencia decrescente, retorne 0
     return 0;
 }
 
 int find_j(vector<int>& p, int i) {
+    /* Encontra o maior índice de um elemento maior que p[i] na sequencia decrescente
+    * j é o maior índice tal que a(i) < a(j) // j >= 1
+    * ENTRADAS:
+    * Ponteiro para Vetor p com permutação
+    * Inteiro com índice i que indica início de sequência decrescente
+    * SAÍDA:
+    * Inteiro com o índice j
+    */
+
+    // Tamanho da permutação
     int n = p.size();
 
+    // Percorre do último elemento ao elemento i+1
     for (int j = n - 1; j >= i + 1; j--)
+        // Se o elemento atual for maior do que o elemento que quebra a sequencia
         if (p[j] > p[i])
+            // Retorne o índice de tal elemento
             return j;
 }
 
 void reverse_greater_i(vector<int>& p, int i) {
+    /* Reverte a ordem dos elementos cujos índices são maiores do que i
+    * ENTRADAS:
+    * Ponteiro para Vetor p com permutação
+    * Inteiro com índice i que indica início de sequência decrescente
+    * SAÍDA:
+    * Vetor p com permutação atualizado
+    */
+
+    // Tamanho da permutação
     int n = p.size();
 
-    vector<int> aux;
-
-    
+    // Vetor auxiliar com elementos de i+1 a n
+    vector<int> aux;    
     for (int j = i + 1; j < n; j++)
         aux.push_back(p[j]);
 
+    // Atualiza p com elementos de aux na ordem contrária
     for (int j = i + 1; j < n; j++)
         p[j] = aux[n - j - 1];
 }

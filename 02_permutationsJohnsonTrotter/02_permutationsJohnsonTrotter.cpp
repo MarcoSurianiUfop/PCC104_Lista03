@@ -51,16 +51,19 @@ vector<vector<int>> permutationsJohnsonTrotter(int n) {
     // Enquanto a permutação atual contiver um elemento móvel
     while (has_mobile(p, M)) {
 
-        // Índice do maior móvel e maior valor móvel
+        // Índice do maior móvel (ik) e maior valor móvel (k)
         ik = largest_mobile(p, M);
         k = p[ik];
 
-        // x
+        // Troca k com elemento para o qual k aponta (índices e valores)
+        // s é a mobilidade do elemento k
+        // Se s = 1, troca com o próximo
+        // Se s = -1, ttroca com anterior
         s = M[ik];
         swapPositions(p[ik], p[ik + s]);
         swapPositions(M[ik], M[ik + s]);
         
-        // x
+        // Reverte a direção de todos elementos maiores que k
         reverseDirections(p, M, k);
 
         // Acrescenta a permutação p atual à saída P
@@ -71,10 +74,10 @@ vector<vector<int>> permutationsJohnsonTrotter(int n) {
 }
 
 int main() {
-    // 
+    // Inicializa número de elementos
     int n;
 
-    // Pede o número dea elementos
+    // Pede o número de elementos
     cout << "Enter the number of elements (integer): ";
     cin >> n;
 
@@ -89,46 +92,99 @@ int main() {
 }
 
 bool has_mobile(vector<int>& p, vector<int>& M) {
+    /*  Verifica se uma permutação possui algum valor móvel
+    * Um elemento é móvel se aponta para um adjacente menor do que ele.
+    * ENTRADAS:
+    * Ponteiro para Vetor p com permutação
+    * Ponteiro para Vetor M com respectivas mobilidades
+    * SAÍDA:
+    * Um booleano indicando true caso haja valor móvel, e falso caso contrário
+    */
+    
+    // Tamanho da permutação
     int n = p.size();
+
+    // Inicializa somador
     int s;
 
+    // Testa cada um dos elementos do vetor p
     for (int i = 0; i < n; i++) {
+        // s é a mobilidade do elemento i
+        // Se s = 1, troca com o próximo ; Se s = -1, troca com anterior
         s = M[i];
+        // Caso primeiro não aponte p/ esquerda nem último aponte p/ direita
         if (i + s >= 0 and i + s < n)
+            // Se elemento atual é maior do que elemento para o qual aponta,
+            // então tal elemento é movel -> retorne true
             if (p[i] > p[i + s])
                 return true;
     }
-
+    
+    // Se chegou aqui, então testou todos elementos e naenhum é móvel
     return false;
 }
 
 int largest_mobile(vector<int>& p, vector<int>& M) {
+    /*  Retorna o maior elemento móvel da permutação
+    * Um elemento é móvel se aponta para um adjacente menor do que ele.
+    * ENTRADAS:
+    * Ponteiro para Vetor p com permutação
+    * Ponteiro para Vetor M com respectivas mobilidades
+    * SAÍDA:
+    * Um inteiro contendo o ÍNDICE do maior elemento móvel da permutação
+    * Retorna -1 caso não haja elemento móvel
+    */
+
+    // Tamanho da permutação
     int n = p.size();
 
-    int k = 0, ik;
+    // Índice do maior móvel (ik) e maior valor móvel (k)
+    int k = 0, ik = -1;
 
+    // Inicializa somador
     int s;
 
+    // Testa cada um dos elementos do vetor p
     for (int i = 0; i < n; i++) {
+        // s é a mobilidade do elemento i
+        // Se s = 1, troca com o próximo ; Se s = -1, troca com anterior
         s = M[i];
+        // Caso primeiro não aponte p/ esquerda nem último aponte p/ direita
         if (i + s >= 0 and i + s < n)
+            // Se elemento atual é maior do que elemento para o qual aponta,
+            // então tal elemento é movel
             if (p[i] > p[i + s])
+                // Se elemento móvel superar o maior elemento móvel até aqui
                 if (p[i] > k) {
+                    // Atualiza o maior elemento móvel (k) e seu índice (ik)
                     k = p[i];
                     ik = i;
                 }
     }
-
+    
+    // Retorna o índice ik (caso não encontre nenhum móvel, retorna -1)
     return ik;
 }
 
 void reverseDirections(vector<int>& p, vector<int>& M, int k) {
+    /*  Reverte a direção de todos elementos maiores que k
+    * ENTRADAS:
+    * Ponteiro para Vetor p com permutação
+    * Ponteiro para Vetor M com respectivas mobilidades
+    * Inteiro k de referência
+    * SAÍDA:
+    * Altera vetor de marcações M
+    */
+
+    // Tamanho da permutação
     int n = p.size();
 
+    // Percorre cada um dos elementos do vetor p
     for (int i = 0; i < n; i++)
+        // Se elemento atual for maior do que k
         if (p[i] > k)
+            // Inverta sua marcação
             M[i] = -M[i];
- 
 }
 
 
